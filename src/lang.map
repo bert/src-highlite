@@ -155,3 +155,4 @@ upc = upc.lang
 tml = tml.lang
 lilypond = lilypond.lang
 ly = lilypond.lang
+fpw = fpw.lang
