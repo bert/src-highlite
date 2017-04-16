@@ -29,7 +29,7 @@
 
 #include <iostream>
 #include <cstdlib>
-#include <boost/regex.hpp>
+#include <regex>
 
 #include "asserttestexit.h"
 #include "srchilite/regexpreprocessor.h"
@@ -301,13 +301,13 @@ int main() {
             replace, "Here are special chars: \\| \\$ \\{ =");
 
     // now test substitutions using match results
-    boost::regex test_regex("--\\[(=*)\\[");
+    std::regex test_regex("--\\[(=*)\\[");
     string to_match = "--[[";
     string to_substitute = "]]"; // between the ] ]
     regex_match_results what;
 
     assertEquals(true,
-            boost::regex_search(to_match, what, test_regex));
+            std::regex_search(to_match, what, test_regex));
     // no substitution must take place
     testReferenceReplace(to_substitute, what, "]]");
 
@@ -318,16 +318,16 @@ int main() {
     to_match = "--[=[";
 
     assertEquals(true,
-            boost::regex_search(to_match, what, test_regex));
+            std::regex_search(to_match, what, test_regex));
     testReferenceReplace(to_substitute, what, "]=]");
 
-    test_regex = boost::regex("--\\[(=*)\\[(-*)\\[");
+    test_regex = std::regex("--\\[(=*)\\[(-*)\\[");
     what = regex_match_results();
     to_substitute = "]@{1}]@{2}]";
     to_match = "--[=[-[";
 
     assertEquals(true,
-            boost::regex_search(to_match, what, test_regex));
+            std::regex_search(to_match, what, test_regex));
     testReferenceReplace(to_substitute, what, "]=]-]");
 
     what = regex_match_results();
@@ -335,7 +335,7 @@ int main() {
 
     to_substitute = "](?(@{1})@{1}|@{2})]@{2}]";
     assertEquals(true,
-            boost::regex_search(to_match, what, test_regex));
+            std::regex_search(to_match, what, test_regex));
     testReferenceReplace(to_substitute, what, "](?(=)=|-)]-]");
 
     what = regex_match_results();
@@ -343,7 +343,7 @@ int main() {
     to_match = "--[=[[";
 
     assertEquals(true,
-            boost::regex_search(to_match, what, test_regex));
+            std::regex_search(to_match, what, test_regex));
     testReferenceReplace(to_substitute, what, "](?(=)=|)]]");
 
     // check StringDef for backreferences

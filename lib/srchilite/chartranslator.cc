@@ -59,17 +59,17 @@ const string CharTranslator::doPreformat(const string &text) {
 
     // we finally build the actual regular expression
     if (!reg_exp)
-        reg_exp = new boost::regex(translation_exp);
+        reg_exp = new std::regex(translation_exp);
 
-    boost::match_flag_type flags = boost::match_default | boost::format_all;
+    std::regex_constants::match_flag_type flags = std::regex_constants::match_default | std::regex_constants::format_sed;
     if (!bol)
-        flags |= boost::match_not_bol;
+        flags |= std::regex_constants::match_not_bol;
     // if we're not at the beginning of the line, then we must not match the
     // beginning of the string as the beginning of a line
 
     std::ostringstream preformat_text(std::ios::out | std::ios::binary);
     std::ostream_iterator<char, char> oi(preformat_text);
-    boost::regex_replace(oi, text.begin(), text.end(), *reg_exp,
+    std::regex_replace(oi, text.begin(), text.end(), *reg_exp,
             translation_format, flags);
 
     // keep track of the fact that we begin a new line

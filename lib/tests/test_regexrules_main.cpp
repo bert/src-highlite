@@ -5,7 +5,7 @@
 #endif
 
 #include <iostream>
-#include <boost/regex.hpp>
+#include <regex>
 
 #include "asserttestexit.h"
 #include "srchilite/regexrulefactory.h"
@@ -123,13 +123,13 @@ int main() {
     cout << "*** test_regexrules" << endl;
 
     // first of all check the only spaces regular expression
-    boost::regex onlySpaces("[[:blank:]]*");
+    std::regex onlySpaces("[[:blank:]]*");
 
-    assertTrue(boost::regex_match(" \t \t ", onlySpaces));
-    assertTrue(boost::regex_match("", onlySpaces));
-    assertFalse(boost::regex_match(" a\t \t ", onlySpaces));
-    assertFalse(boost::regex_match(" a ", onlySpaces));
-    assertFalse(boost::regex_match("foo", onlySpaces));
+    assertTrue(std::regex_match(" \t \t ", onlySpaces));
+    assertTrue(std::regex_match("", onlySpaces));
+    assertFalse(std::regex_match(" a\t \t ", onlySpaces));
+    assertFalse(std::regex_match(" a ", onlySpaces));
+    assertFalse(std::regex_match("foo", onlySpaces));
 
     RegexRuleFactory factory;
 

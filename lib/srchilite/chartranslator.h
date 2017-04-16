@@ -23,7 +23,7 @@
 #define NUM_OF_CHARS 256
 
 #include <string>
-#include <boost/regex.hpp>
+#include <regex>
 
 #include "preformatter.h"
 
@@ -45,7 +45,7 @@ protected:
     /// the corresponding translated regular expression (for buffering)
     std::string translation_format;
     /// the actual regular expression
-    boost::regex *reg_exp;
+    std::regex *reg_exp;
     /// whether we are at the beginning of a new line
     bool bol;
 

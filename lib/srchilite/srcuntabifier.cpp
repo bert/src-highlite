@@ -16,15 +16,15 @@
 
 #include "srcuntabifier.h"
 #include <sstream>
-#include <boost/regex.hpp>
+#include <regex>
 
 namespace srchilite {
 
-const boost::regex tabexp("[\\t]");
+const std::regex tabexp("[\\t]");
 
 const string Untabifier::doPreformat(const string &s) {
-    boost::sregex_iterator m1(s.begin(), s.end(), tabexp);
-    boost::sregex_iterator m2;
+    std::sregex_iterator m1(s.begin(), s.end(), tabexp);
+    std::sregex_iterator m2;
 
     if (m1 == m2) {
         if (s[0] == '\n')
@@ -39,7 +39,7 @@ const string Untabifier::doPreformat(const string &s) {
     string prefix;
     string suffix;
 
-    for (boost::sregex_iterator it = m1; it != m2; ++it) {
+    for (std::sregex_iterator it = m1; it != m2; ++it) {
         prefix = it->prefix();
         suffix = it->suffix();
         if (prefix.size()) {

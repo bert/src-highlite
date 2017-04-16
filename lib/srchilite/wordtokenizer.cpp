@@ -8,7 +8,7 @@
 #include "config.h"
 #endif
 
-#include <boost/regex.hpp>
+#include <regex>
 
 #include "wordtokenizer.h"
 
@@ -17,7 +17,7 @@ namespace srchilite {
 /**
  * the regular expression for detecting spaces and words
  */
-static boost::regex string_or_space_regex("([^[:blank:]]+)|([[:blank:]]+)");
+static std::regex string_or_space_regex("([^[:blank:]]+)|([[:blank:]]+)");
 
 using namespace std;
 
@@ -26,8 +26,8 @@ using namespace std;
 
 void WordTokenizer::tokenize(const std::string &s,
         WordTokenizerResults &results) {
-    boost::sregex_iterator i(s.begin(), s.end(), string_or_space_regex);
-    boost::sregex_iterator j;
+    std::sregex_iterator i(s.begin(), s.end(), string_or_space_regex);
+    std::sregex_iterator j;
     while (i != j) {
         if ((*i)[SPACE].matched) {
             results.push_back(make_pair(string((*i)[SPACE].first, (*i)[SPACE].second), ""));

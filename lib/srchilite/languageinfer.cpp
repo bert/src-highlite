@@ -18,7 +18,7 @@
 #include "fileutil.h"
 
 #include <boost/algorithm/string.hpp>
-#include <boost/regex.hpp>
+#include <regex>
 #include <vector>
 
 using namespace std;
@@ -68,19 +68,19 @@ const string guessEmacsMode(const string &modeline) {
 const string LanguageInfer::infer(istream &stream) {
     // the regular expression for finding the language specification in a script file
     // this such as #! /bin/bash
-    static boost::regex
+    static std::regex
             langRegEx(
                     "#[[:blank:]]*![[:blank:]]*(?:[\\./]*)(?:[[:alnum:]]+[\\./]+)*([[:alnum:]]+)");
 
     // the regular expression for finding the language specification in a script file
     // this such as #! /usr/bin/env perl
-    static boost::regex
+    static std::regex
             langEnvRegEx(
                     "#[[:blank:]]*![[:blank:]]*(?:[\\./]*)(?:[[:alnum:]]+[\\./]+)*(?:env)[[:blank:]]+([[:alnum:]]+)");
 
     // the regular expression for finding the language specification in a script file
     // according to Emacs convention: # -*- language -*-
-    static boost::regex
+    static std::regex
             langRegExEmacs("-\\*-[[:blank:]]*([[:print:]]+).*-\\*-");
 
     // the Emacs specification has the precedence in order to correctly infer
@@ -91,10 +91,10 @@ const string LanguageInfer::infer(istream &stream) {
 
     // the regular expression for scripts starting with <?...
     // such as xml and php
-    static boost::regex langXMLLikeScripts("<\\?([[:alnum:]]+)");
+    static std::regex langXMLLikeScripts("<\\?([[:alnum:]]+)");
 
     // the regular expression for <!DOCTYPE
-    static boost::regex langDocType("<![Dd][Oo][Cc][Tt][Yy][Pp][Ee]");
+    static std::regex langDocType("<![Dd][Oo][Cc][Tt][Yy][Pp][Ee]");
 
     string firstLine;
     string secondLine;
@@ -104,13 +104,13 @@ const string LanguageInfer::infer(istream &stream) {
     // and the second line
     read_line(&stream, secondLine);
 
-    boost::match_results<std::string::const_iterator> what;
-    boost::match_results<std::string::const_iterator> whatEnv;
-    boost::match_results<std::string::const_iterator> whatEmacs;
+    std::match_results<std::string::const_iterator> what;
+    std::match_results<std::string::const_iterator> whatEnv;
+    std::match_results<std::string::const_iterator> whatEmacs;
 
     // first try the emacs specification
-    boost::regex_search(secondLine, whatEmacs, langRegExEmacs,
-            boost::match_default);
+    std::regex_search(secondLine, whatEmacs, langRegExEmacs,
+            std::regex_constants::match_default);
 
     if (whatEmacs[1].matched) {
         string guess = guessEmacsMode(whatEmacs[1]);
@@ -119,8 +119,8 @@ const string LanguageInfer::infer(istream &stream) {
     }
 
     // try also on the first line
-    boost::regex_search(firstLine, whatEmacs, langRegExEmacs,
-             boost::match_default);
+    std::regex_search(firstLine, whatEmacs, langRegExEmacs,
+             std::regex_constants::match_default);
 
     if (whatEmacs[1].matched) {
         string guess = guessEmacsMode(whatEmacs[1]);
@@ -129,27 +129,27 @@ const string LanguageInfer::infer(istream &stream) {
     }
 
     // try also the env specification
-    boost::regex_search(firstLine, whatEnv, langEnvRegEx, boost::match_default);
+    std::regex_search(firstLine, whatEnv, langEnvRegEx, std::regex_constants::match_default);
 
     if (whatEnv[1].matched)
         return whatEnv[1];
 
     // try the sha-bang specification
-    boost::regex_search(firstLine, what, langRegEx, boost::match_default);
+    std::regex_search(firstLine, what, langRegEx, std::regex_constants::match_default);
 
     if (what[1].matched)
         return what[1];
 
     // the xml like starting scripts
-    boost::regex_search(firstLine, what, langXMLLikeScripts,
-            boost::match_default);
+    std::regex_search(firstLine, what, langXMLLikeScripts,
+            std::regex_constants::match_default);
 
     if (what[1].matched)
         return what[1];
 
     // the doctype case
-    boost::regex_search(firstLine, what, langDocType,
-            boost::match_default);
+    std::regex_search(firstLine, what, langDocType,
+            std::regex_constants::match_default);
 
     if (what[0].matched)
         return "xml";

@@ -15,7 +15,7 @@
 #endif
 
 #include <iostream>
-#include <boost/regex.hpp>
+#include <regex>
 
 #include "langmap.h"
 #include "fileutil.h"
@@ -28,7 +28,7 @@ using namespace std;
 namespace srchilite {
 
 /// the regular expression for the map file syntax
-boost::regex
+std::regex
         assoc_exp(
                 "[[:blank:]]*([^[:blank:]]+)[[:blank:]]*=[[:blank:]]*([^[:blank:]\\r]+)[[:blank:]\\r]*|([[:space:]]+)|([[:space:]]*#.*)");
 
@@ -53,8 +53,8 @@ void LangMap::open() {
 
     while (read_line(in, line)) {
         if (line.size()) {
-            boost::cmatch what;
-            if (!boost::regex_match(line.c_str(), what, assoc_exp))
+            std::cmatch what;
+            if (!std::regex_match(line.c_str(), what, assoc_exp))
                 throw ParserException("wrong specification" + line, filename,
                         lineno);
             else if (!what[3].matched) // not all spaces

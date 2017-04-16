@@ -11,7 +11,7 @@
 
 #include <string>
 #include <list>
-#include <boost/regex.hpp>
+#include <regex>
 
 namespace srchilite {
 
@@ -24,7 +24,7 @@ public:
     RegexRanges();
     ~RegexRanges();
 
-    typedef std::list<boost::regex> RegexRangesType;
+    typedef std::list<std::regex> RegexRangesType;
 
     /**
      * Adds a regular expression range, specified by the passed string.
@@ -48,7 +48,7 @@ public:
      * @param line
      * @return the matched regular expression or 0 if none was found
      */
-    const boost::regex *matches(const std::string &line);
+    const std::regex *matches(const std::string &line);
 
     /**
      * @param line the line to inspect
@@ -76,7 +76,7 @@ private:
      * The end of the range will be found when we match again the previously
      * matched expression.
      */
-    const boost::regex *currentRegex;
+    const std::regex *currentRegex;
 };
 
 }

@@ -24,7 +24,7 @@ void check_range_regex(const string &s, bool expectedTrue = true) {
 
 void check_match(const string &line, const string &expected = "") {
     cout << "searching inside " << line;
-    const boost::regex *matched = 0;
+    const std::regex *matched = 0;
     if (expected != "") {
         matched = ranges.matches(line);
         assertTrue(matched != 0);

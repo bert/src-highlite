@@ -9,7 +9,7 @@
 
 #include "highlightrule.h"
 
-#include <boost/regex.hpp>
+#include <regex>
 
 namespace srchilite {
 
@@ -18,7 +18,8 @@ namespace srchilite {
  */
 class RegexHighlightRule : public HighlightRule {
     /// the regular expression for the rule
-    boost::regex regExp;
+    std::regex regExp;
+    std::string regExpStr;
 public:
     /**
      * @param s the string representing the regular expression

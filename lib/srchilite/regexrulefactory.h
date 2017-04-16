@@ -13,7 +13,7 @@ namespace srchilite {
 
 /**
  * Implementation of the abstract factory, creating highlighting rules
- * based on boost::regex regular expressions.
+ * based on std::regex regular expressions.
  */
 class RegexRuleFactory : public HighlightRuleFactory {
 public:

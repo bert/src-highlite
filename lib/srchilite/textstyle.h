@@ -16,7 +16,7 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <boost/regex.hpp>
+#include <regex>
 
 namespace srchilite {
 
@@ -40,7 +40,7 @@ private:
     typedef std::map<std::string, IndexVector> SubstitutionIndexes;
 
     /// the regular expression to find variable occurrences
-    boost::regex var_exp;
+    std::regex var_exp;
 
     std::string repr;
 
