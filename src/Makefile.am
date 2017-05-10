@@ -85,7 +85,8 @@ manifest.lang asm.lang todo.lang applescript.lang \
 vbscript.lang awk.lang bat.lang clipper.lang cobol.lang d.lang \
 errors.lang erlang.lang proto.lang vala.lang lisp.lang islisp.lang \
 scheme.lang po.lang opa.lang javalog.lang upc.lang tml.lang \
-lilypond.lang
+lilypond.lang coffeescript.lang go.lang \
+r.lang s.lang zsh.lang groovy.lang json.lang feature.lang
 
 LANGFILES_NOTTOCHECK= \
 tml_formatting_all.lang  tml_macrolinks.lang      tml_macrosdelayed2.lang \
@@ -104,6 +105,8 @@ htmlcss.outlang \
 htmltable.outlang \
 htmltablelinenum.outlang \
 html.outlang \
+html5.outlang \
+html5_common.outlang \
 latex.outlang \
 latexcolor.outlang \
 xhtml_common.outlang \
@@ -115,10 +118,13 @@ texinfo.outlang \
 javadoc.outlang \
 docbook.outlang \
 odf.outlang \
-mediawiki.outlang
+mediawiki.outlang \
+sexp.outlang \
+groff_man.outlang \
+groff_mm.outlang \
+groff_mm_color.outlang
 
-
-STYLEFILES = texinfo.style esc.style esc256.style lilypond.style
+STYLEFILES = texinfo.style esc.style esc256.style lilypond.style r.style json.style
 
 source_highlightdata_DATA = \
 $(LANGFILES) $(LANGFILES_NOTTOCHECK) $(OUTLANGFILES) \

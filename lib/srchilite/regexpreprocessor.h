@@ -16,7 +16,7 @@
 #include <list>
 #include <utility>
 #include <vector>
-#include <boost/regex.hpp>
+#include <regex>
 
 namespace srchilite {
 
@@ -58,9 +58,9 @@ typedef std::pair<int, int> backreference_info;
 typedef std::vector<std::string> backreference_replacements;
 
 /**
- * The result of boost::regex_search
+ * The result of std::regex_search
  */
-typedef boost::match_results<std::string::const_iterator> regex_match_results;
+typedef std::match_results<std::string::const_iterator> regex_match_results;
 
 /**
  preprocess a regular expression, e.g., transform "()" into "(?:)"

@@ -37,7 +37,7 @@ TextStyle::TextStyle(const string &s,const char **vars) : repr((s.size() ? s : T
 
   exp_buff << ")";
 
-  var_exp = boost::regex(exp_buff.str());
+  var_exp = std::regex(exp_buff.str());
 }
 
 TextStyle::~TextStyle()
@@ -70,15 +70,15 @@ TextStyle::build_vectors()
   parts.clear();
   substitutions.clear();
 
-  boost::sregex_iterator i1(repr.begin(), repr.end(), var_exp);
-  boost::sregex_iterator i2;
+  std::sregex_iterator i1(repr.begin(), repr.end(), var_exp);
+  std::sregex_iterator i2;
   string suffix;
 
   if (i1 == i2)
     return ;
 
   int index = -1;
-  for (boost::sregex_iterator it = i1; it != i2; ++it) {
+  for (std::sregex_iterator it = i1; it != i2; ++it) {
     string prefix = it->prefix();
     if (prefix.size()) {
       parts.push_back(prefix);
@@ -177,8 +177,8 @@ TextStyle::update(const TextStyle &inner)
 bool
 TextStyle::containsStyleVar() const
 {
-    boost::regex style_exp(STYLE_VAR);
-    return boost::regex_search(repr, style_exp);
+    std::regex style_exp(STYLE_VAR);
+    return std::regex_search(repr, style_exp);
 }
 
 bool

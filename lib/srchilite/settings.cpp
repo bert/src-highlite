@@ -27,7 +27,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
-#include <boost/regex.hpp>
+#include <regex>
 
 #include "fileutil.h"
 #include "verbosity.h"
@@ -47,7 +47,7 @@ namespace srchilite {
 string globalDataDir = "";
 
 /// the regular expression for the conf file syntax
-boost::regex
+std::regex
         datadir_exp(
                 "[[:blank:]]*(datadir)[[:blank:]]*=[[:blank:]]*\"([^[:blank:]\\r]+)\"[[:blank:]\\r]*|([[:space:]]+)|([[:space:]]*#.*)");
 
@@ -94,14 +94,14 @@ bool Settings::checkForTestFile() {
     string file = dataDir + "/" + testFileName;
     ifstream i(file.c_str());
 
-    return (i != 0);
+    return (!i.fail());
 }
 
 bool Settings::checkForConfFile() {
     string file = confDir + confFileName;
     ifstream i(file.c_str());
 
-    return (i != 0);
+    return (!i.fail());
 }
 
 bool Settings::readDataDir() {
@@ -109,11 +109,11 @@ bool Settings::readDataDir() {
     ifstream i(file.c_str());
 
     string line;
-    if (i != 0) {
+    if (!i.fail()) {
         while (read_line(&i, line)) {
             if (line.size()) {
-                boost::cmatch what;
-                if (boost::regex_match(line.c_str(), what, datadir_exp)
+                std::cmatch what;
+                if (std::regex_match(line.c_str(), what, datadir_exp)
                         && what[2].matched) {// not all spaces, nor comments
                     dataDir = what[2];
                     return true;

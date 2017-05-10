@@ -44,6 +44,8 @@ JAVA2HTMLDOC = $(JAVA2HTML) --title="This is the title"
 
 JAVA2ODF = $(PROGNAME) -s java -f odf
 
+JAVA2GROFF_MAN = $(PROGNAME) -s java -f groff_man
+
 JAVA2ODFDOC = $(JAVA2ODF) --title="This is the title"
 
 JAVA2MEDIAWIKI = $(PROGNAME) -s java -f mediawiki
@@ -171,7 +173,7 @@ WRONGFILES = wrong_exp.lang wrong_var.lang wrong_trans.outlang wrong_syntax_simp
 WRONGFILESOUT = wrong_exp.err wrong_var.err wrong_trans.err missing_langmap.err missing_extension.err wrong_syntax_simple.err wrong_syntax.err wrong_syntax_include.err wrong_namedgroups.err wrong_namedgroups_subexps.err wrong_namedgroups_subexps2.err wrong_backref.err wrong_backref2.err wrong_dyn_backref.err wrong_dyn_backref2.err wrong_include.err wrong_outlang_include.err
 WRONGSTYLES = wrong_dircolor.style wrong_already_defined.style wrong_already_defined_css.css
 WRONGSTYLESOUT = wrong_dircolor.err wrong_already_defined.err wrong_already_defined_css.err
-WRONGCMDLINEPARAMS = wrong_line_range.err wrong_regex_range.err \
+WRONGCMDLINEPARAMS = wrong_line_range.err \
  wrong_syntax_mode.err
 # missing_langmap2.err
 
@@ -204,6 +206,7 @@ test.rb test_comments.rb test.rb.html test_comments.rb.html \
 test.java.txt \
 test.java.tex test.java.tex.html \
 test.java.fodt test.java.doc.fodt \
+test.java.groff \
 test.java.mediawiki \
 test.java.texinfo \
 test.lua test.lua.html \
@@ -254,6 +257,10 @@ test.bib test.bib.html \
 test.makefile test.makefile.html \
 test.css test.css.html \
 test.ps test.ps.html \
+test.go test.go.html \
+test.groovy test.groovy.html \
+test.json test.json.html \
+test.feature test.feature.html \
 $(WRONGFILES) \
 $(WRONGFILESOUT) \
 $(WRONGSTYLES) $(WRONGSTYLESOUT) \
@@ -322,7 +329,8 @@ test.opa test.opa.html \
 test.javalog test.javalog.html \
 test.upc test.upc.html \
 test.tml test.tml.html \
-test.ly test.ly.html
+test.ly test.ly.html \
+test.coffee test.coffee.html
 
 LINERANGE1EXE=$(JAVA2HTML) --line-range="12-18","29-34" --line-number
 LINERANGE2EXE=$(JAVA2HTML) --line-range="12-18","29-34" --line-number --range-context=3
@@ -338,7 +346,9 @@ REGEXRANGE4EXE=$(JAVA2HTML) --regex-range="/\\* [[:alpha:]]+ \\*/" --line-number
 
 WRONGLINERANGEEXE=$(PROGEXE) --line-range="a-b"  --data-dir=$(top_srcdir)/src < $(srcdir)/test.java > /dev/null
 
-WRONGREGEXRANGEEXE=$(PROGEXE) --regex-range="ab","foobar","{wrong"  --data-dir=$(top_srcdir)/src < $(srcdir)/test.java > /dev/null
+# this is not wrong anymore
+# https://savannah.gnu.org/bugs/index.php?41786
+#WRONGREGEXRANGEEXE=$(PROGEXE) --regex-range="ab","foobar","{wrong"  --data-dir=$(top_srcdir)/src < $(srcdir)/test.java > /dev/null
 
 
 WRONGSYNTAXMODEEXE=$(PROGEXE) --data-dir=$(top_srcdir)/src -o /dev/null $(srcdir)/test.java
@@ -420,6 +430,10 @@ check_makefile \
 check_asm \
 check_css \
 check_ps \
+check_go \
+check_groovy \
+check_json \
+check_feature \
 check_docbook \
 check_namedgroups \
 check_slang \
@@ -460,6 +474,7 @@ check_javalog \
 check_upc \
 check_lilypond \
 check_tml \
+check_coffeescript \
 check-output-dir \
 check_stop \
 check_vardecl \
@@ -496,6 +511,7 @@ check_java2html: remove_css_html_files remove_css_doc_files test.css.java.html t
 	$(JAVA2TEXINFO) -n -i $(srcdir)/test.java -o test.java.out.texinfo
 	$(JAVA2ODF) --line-number=" " -i $(srcdir)/test.java -o test.java.out.fodt
 	$(JAVA2ODFDOC) --line-number=" " -i $(srcdir)/test.java -o test.java.out.doc.fodt
+	$(JAVA2GROFF_MAN) --line-number=" " -i $(srcdir)/test.java -o test.java.out.groff
 	$(JAVA2MEDIAWIKI) -i $(srcdir)/test.java -o test.java.out.mediawiki
 	@echo expect no output from diff
 	$(DIFF) $(srcdir)/test.java.html test.java.out.html
@@ -511,6 +527,7 @@ check_java2html: remove_css_html_files remove_css_doc_files test.css.java.html t
 	$(DIFF) $(srcdir)/test.java.texinfo test.java.out.texinfo
 	$(DIFF) $(srcdir)/test.java.fodt test.java.out.fodt
 	$(DIFF) $(srcdir)/test.java.doc.fodt test.java.out.doc.fodt
+	$(DIFF) $(srcdir)/test.java.groff test.java.out.groff
 	$(DIFF) $(srcdir)/test.java.mediawiki test.java.out.mediawiki
 	$(DIFF) $(srcdir)/test.java.html test.css.java.html
 	$(DIFF) $(srcdir)/test_notfixed.html test.nf_css.java.html
@@ -880,6 +897,11 @@ check_lilypond:
 	@echo expect no output from diff
 	$(DIFF) $(srcdir)/test.ly.html test.ly.out.html
 
+check_coffeescript:
+	$(PROGNAME_STD) -i $(srcdir)/test.coffee -o test.coffee.out.html
+	@echo expect no output from diff
+	$(DIFF) $(srcdir)/test.coffee.html test.coffee.out.html
+
 check_tml:
 	$(PROGNAME_STD) -i $(srcdir)/test.tml -o test.tml.out.html
 	@echo expect no output from diff
@@ -957,6 +979,26 @@ check_ps:
 	$(PROGNAME) -i $(srcdir)/test.ps -o test.ps.out.html
 	@echo expect no output from diff
 	$(DIFF) $(srcdir)/test.ps.html test.ps.out.html
+
+check_go:
+	$(PROGNAME) -i $(srcdir)/test.go -o test.go.out.html
+	@echo expect no output from diff
+	$(DIFF) $(srcdir)/test.go.html test.go.out.html
+
+check_groovy:
+	$(PROGNAME) -i $(srcdir)/test.groovy -o test.groovy.out.html
+	@echo expect no output from diff
+	$(DIFF) $(srcdir)/test.groovy.html test.groovy.out.html
+
+check_json:
+	$(PROGNAME) --style-file=json.style -i $(srcdir)/test.json -o test.json.out.html
+	@echo expect no output from diff
+	$(DIFF) $(srcdir)/test.json.html test.json.out.html
+
+check_feature:
+	$(PROGNAME) -i $(srcdir)/test.feature -o test.feature.out.html
+	@echo expect no output from diff
+	$(DIFF) $(srcdir)/test.feature.html test.feature.out.html
 
 check_lang:
 	$(LANG2HTML) -i $(top_srcdir)/src/log.lang -o log.lang.out.html
@@ -1053,11 +1095,13 @@ check_wrong_lineranges:
 	@echo expect no output from diff
 	$(DIFF) $(srcdir)/wrong_line_range.err wrong_line_range.err_out
 
+# this is not wrong anymore
+# https://savannah.gnu.org/bugs/index.php?41786
 check_wrong_regexranges:
-	rm -f *.err_out
-	$(WRONGREGEXRANGEEXE) 2> wrong_regex_range.err_out || true
-	@echo expect no output from diff
-	$(DIFF) $(srcdir)/wrong_regex_range.err wrong_regex_range.err_out
+#	rm -f *.err_out
+#	$(WRONGREGEXRANGEEXE) 2> wrong_regex_range.err_out || true
+#	@echo expect no output from diff
+#	$(DIFF) $(srcdir)/wrong_regex_range.err wrong_regex_range.err_out
 
 check_wrong_syntaxmode:
 	rm -f *.err_out
@@ -1260,7 +1304,7 @@ check-valgrind:
 	$(VALGRINDTEST) $(CPP2HTML) --gen-references=inline --ctags-file=my_test_ref.tags --line-number test_refs_tmp.h test_refs_tmp.cpp
 	rm -f test_refs_tmp.*
 
-CLEANFILES = *.out.html *.out.txt *.out.tex *.err_out *.unknown_out *.out.debug *.out.texinfo *_tmp.* *.out.show myscript* myimplicitxml* myimplicitphp* *.css.java.html *.nf_css.java.html *.css_xhtml.java.html *.css_doc.java.html *.out.docbook *.out.xhtml *.out.langelems *.out.list test_newlines.out test_nonewlines.out temp.output *.out.fodt *.out.doc.fodt *.out.mediawiki
+CLEANFILES = *.out.html *.out.txt *.out.tex *.err_out *.unknown_out *.out.debug *.out.texinfo *_tmp.* *.out.show myscript* myimplicitxml* myimplicitphp* *.css.java.html *.nf_css.java.html *.css_xhtml.java.html *.css_doc.java.html *.out.docbook *.out.xhtml *.out.langelems *.out.list test_newlines.out test_nonewlines.out temp.output *.out.fodt *.out.doc.fodt *.out.mediawiki *.out.groff
 
 clean_html:
 	rm -f *.h.html *.java.html *.cc.html *.pas.html *.pl.html *.pm.html *.php3.html *.py.html *.chlog.html *.chlog_css.html *.l.html test_xhtml*.html test_notfixed.html test_css.html test_css_nodoc.html test_header.html *.rb.html *.js.html *.java.txt *.java.tex *.h.docbook *.java.texinfo *.lua.html *.ml.html *.sml.html test_*_lines.html *.log.html *.y.html *.simple.html *.ngroups.html *.tex.html *.lgt.html *.diff.html *.lang.html *.htm.html *.style.html *.cs.html *.xml.html *.sh.html *.url.html *.txt.html *.unknown.html *.tcl.html *.bib.html *.makefile.html *.css.html *.ps.html *.sl.html *.isolate.html *.backref.html *.c.html *.wdefault.html *.wodefault.html *.properties.html *.desktop.html *.lsm.html *.spec.html *.hx.html *.fortran.html *.fixed-fortran.html *.hx.html *.m4.html *.scala.html *.adb.html *.conf.html *.xorg.html

@@ -15,7 +15,7 @@
 #endif
 
 #include "regexpreprocessor.h"
-#include <boost/regex.hpp>
+#include <regex>
 #include <sstream>
 #include <ctype.h>
 #include <iostream>
@@ -28,18 +28,18 @@ namespace srchilite {
 // regular expression they try to match is a valid regular expression
 
 /// matches character sets in a regular expression
-const boost::regex char_set_exp("\\[([^\\|]*)\\]");
+const std::regex char_set_exp("\\[([^\\|]*)\\]");
 
 /// substitute a "(" with "(?:" if it's not followed by a ? and not preceeded by \\ char
-const boost::regex from("(\\\\\\()|(\\((?!\\?))");
+const std::regex from("(\\\\\\()|(\\((?!\\?))");
 /// substitute a "(" with "(?:" if it's not followed by a ? and not preceeded by \\ char
 const string into = "(?1\\\\\\()(?2\\(\\?\\:)";
 
 /// found actual marking parenthesis, i.e., not preceeded by \\ and not followed by ?
-const boost::regex paren("(?<!\\\\)\\((?!\\?)");
+const std::regex paren("(?<!\\\\)\\((?!\\?)");
 
 /// regular expression matching a backreference, e.g., \1 or inside a conditional (?(1)...)
-const boost::regex
+const std::regex
         backreference("(\\\\([[:digit:]]))|(\\(\\?\\(([[:digit:]]))");
 
 /// index of the subexpression matching a slashed backreference
@@ -53,10 +53,10 @@ const boost::regex
 
 /** regular expression matching a reference, e.g., @{digit} the @$ must not be preceeded
  by an escape char */
-const boost::regex reference_exp("(?<!\\\\)@\\{([[:digit:]])\\}");
+const std::regex reference_exp("(?<!\\\\)@\\{([[:digit:]])\\}");
 
 /// substitute a special char (i.e., .[{()\*+?|^$)...
-const boost::regex special_char("(\\.|\\[|\\]|\\{|\\}|\\(|\\)|\\\\|\\*|\\+|\\?|\\||\\^|\\$)");
+const std::regex special_char("(\\.|\\[|\\]|\\{|\\}|\\(|\\)|\\\\|\\*|\\+|\\?|\\||\\^|\\$)");
 /// ...with its escaped version
 const string special_char_escape = "(?1\\\\\\1)";
 
@@ -81,8 +81,8 @@ RegexPreProcessor::~RegexPreProcessor() {
 
 const string RegexPreProcessor::preprocess(const string &s) {
     // substitute a "(" with "(?:" if it's not followed by a ? and not preceeded by \\ char
-    return boost::regex_replace(s, from, into, boost::match_default
-            | boost::format_all);
+    return std::regex_replace(s, from, into, std::regex_constants::match_default
+            | std::regex_constants::format_default);
 }
 
 const string _make_nonsensitive(const string &s) {
@@ -98,8 +98,8 @@ const string _make_nonsensitive(const string &s) {
 }
 
 const string RegexPreProcessor::make_nonsensitive(const string &s) {
-    boost::sregex_iterator m1(s.begin(), s.end(), char_set_exp);
-    boost::sregex_iterator m2;
+    std::sregex_iterator m1(s.begin(), s.end(), char_set_exp);
+    std::sregex_iterator m2;
 
     if (m1 == m2)
         return _make_nonsensitive(s);
@@ -108,7 +108,7 @@ const string RegexPreProcessor::make_nonsensitive(const string &s) {
     string prefix;
     string suffix;
 
-    for (boost::sregex_iterator it = m1; it != m2; ++it) {
+    for (std::sregex_iterator it = m1; it != m2; ++it) {
         prefix = it->prefix();
         suffix = it->suffix();
 
@@ -127,12 +127,12 @@ const string RegexPreProcessor::make_nonsensitive(const string &s) {
 }
 
 unsigned int RegexPreProcessor::num_of_subexpressions(const string &s) {
-    boost::sregex_iterator m1(s.begin(), s.end(), paren);
-    boost::sregex_iterator m2;
+    std::sregex_iterator m1(s.begin(), s.end(), paren);
+    std::sregex_iterator m2;
 
     int counter = 0;
 
-    for (boost::sregex_iterator it = m1; it != m2; ++it) {
+    for (std::sregex_iterator it = m1; it != m2; ++it) {
         ++counter;
     }
 
@@ -141,8 +141,8 @@ unsigned int RegexPreProcessor::num_of_subexpressions(const string &s) {
 
 const subexpressions_strings *RegexPreProcessor::split_marked_subexpressions(
         const string &s) {
-    boost::sregex_iterator m1(s.begin(), s.end(), paren);
-    boost::sregex_iterator m2;
+    std::sregex_iterator m1(s.begin(), s.end(), paren);
+    std::sregex_iterator m2;
 
     // we don't need to parse it (we can use the regex) since we assume that
     // the regular expression represented by s is made up of only
@@ -150,7 +150,7 @@ const subexpressions_strings *RegexPreProcessor::split_marked_subexpressions(
 
     subexpressions_strings *split = new subexpressions_strings;
 
-    for (boost::sregex_iterator it = m1; it != m2;) {
+    for (std::sregex_iterator it = m1; it != m2;) {
         string prefix = it->prefix();
         if (prefix.size())
             split->push_back("(" + prefix);
@@ -253,16 +253,16 @@ subexpressions_info RegexPreProcessor::num_of_marked_subexpressions(
 }
 
 bool RegexPreProcessor::contains_backreferences(const std::string &s) {
-    return boost::regex_search(s, backreference);
+    return std::regex_search(s, backreference);
 }
 
 backreference_info RegexPreProcessor::num_of_backreferences(const string &s) {
-    boost::sregex_iterator m1(s.begin(), s.end(), backreference);
-    boost::sregex_iterator m2;
+    std::sregex_iterator m1(s.begin(), s.end(), backreference);
+    std::sregex_iterator m2;
 
     backreference_info info(std::make_pair(0, 0));
 
-    for (boost::sregex_iterator it = m1; it != m2; ++it) {
+    for (std::sregex_iterator it = m1; it != m2; ++it) {
         ++(info.first);
         // for converting a string into the number
         stringstream buffer;
@@ -286,12 +286,12 @@ backreference_info RegexPreProcessor::num_of_backreferences(const string &s) {
 }
 
 backreference_info RegexPreProcessor::num_of_references(const string &s) {
-    boost::sregex_iterator m1(s.begin(), s.end(), reference_exp);
-    boost::sregex_iterator m2;
+    std::sregex_iterator m1(s.begin(), s.end(), reference_exp);
+    std::sregex_iterator m2;
 
     backreference_info info(std::make_pair(0, 0));
 
-    for (boost::sregex_iterator it = m1; it != m2; ++it) {
+    for (std::sregex_iterator it = m1; it != m2; ++it) {
         ++(info.first);
         // for converting a string into the number
         stringstream buffer;
@@ -313,8 +313,8 @@ backreference_info RegexPreProcessor::num_of_references(const string &s) {
 
 const std::string RegexPreProcessor::replace_backreferences(
         const std::string &original, const backreference_replacements &replace) {
-    boost::sregex_iterator m1(original.begin(), original.end(), backreference);
-    boost::sregex_iterator m2;
+    std::sregex_iterator m1(original.begin(), original.end(), backreference);
+    std::sregex_iterator m2;
 
     if (m1 == m2) {
         // no backreference in the current string
@@ -323,7 +323,7 @@ const std::string RegexPreProcessor::replace_backreferences(
 
     ostringstream result;
 
-    for (boost::sregex_iterator it = m1; it != m2;) {
+    for (std::sregex_iterator it = m1; it != m2;) {
         string prefix = it->prefix();
         if (prefix.size())
             result << prefix;
@@ -372,8 +372,8 @@ const std::string RegexPreProcessor::replace_backreferences(
 
 const string RegexPreProcessor::replace_references(
         const std::string &original, const backreference_replacements &replace) {
-    boost::sregex_iterator m1(original.begin(), original.end(), reference_exp);
-    boost::sregex_iterator m2;
+    std::sregex_iterator m1(original.begin(), original.end(), reference_exp);
+    std::sregex_iterator m2;
 
     if (m1 == m2) {
         // no backreference in the current string
@@ -382,7 +382,7 @@ const string RegexPreProcessor::replace_references(
 
     ostringstream result;
 
-    for (boost::sregex_iterator it = m1; it != m2;) {
+    for (std::sregex_iterator it = m1; it != m2;) {
         string prefix = it->prefix();
         if (prefix.size())
             result << prefix;
@@ -400,9 +400,9 @@ const string RegexPreProcessor::replace_references(
         // string, after escaping non-alphanumerical characters
         // this is necessary since this string will be used to create a regular
         // expression
-        result << boost::regex_replace(replace[backreference_num-1],
-                special_char, special_char_escape, boost::match_default
-                | boost::format_all);
+        result << std::regex_replace(replace[backreference_num-1],
+                special_char, special_char_escape, std::regex_constants::match_default
+                | std::regex_constants::format_default);
 
         string suffix = it->suffix();
         if (++it == m2)

@@ -74,7 +74,7 @@ void HighlightStateBuilder::build(LangElems *elems, HighlightStatePtr mainState)
     for (LangElems::const_iterator it = elems->begin(); it != elems->end(); ++it) {
         try {
             build_DB(*it, mainState.get());
-        } catch (boost::regex_error &e) {
+        } catch (std::regex_error &e) {
             // catch all other exceptions
             throw HighlightBuilderException("problem in this expression: "
                     + (*it)->toStringOriginal(), *it, e);

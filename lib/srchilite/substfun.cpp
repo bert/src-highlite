@@ -18,19 +18,19 @@ using namespace std;
 namespace srchilite {
 
 string
-subst(const boost::regex &e, const string &s, const string &sub)
+subst(const std::regex &e, const string &s, const string &sub)
 {
     string ret;
 
-    boost::sregex_iterator i1(s.begin(), s.end(), e);
-    boost::sregex_iterator i2;
+    std::sregex_iterator i1(s.begin(), s.end(), e);
+    std::sregex_iterator i2;
     string suffix;
 
     if (i1 == i2)
         return s;
     // the exp is not in the string so we do not alter it.
 
-    for (boost::sregex_iterator it = i1; it != i2; ++it) {
+    for (std::sregex_iterator it = i1; it != i2; ++it) {
         string prefix = it->prefix();
         if (prefix.size())
             ret += prefix;

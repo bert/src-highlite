@@ -8,7 +8,7 @@
 #define HIGHLIGHTBUILDEREXCEPTION_H_
 
 #include <ostream>
-#include <boost/regex/pattern_except.hpp>
+#include <regex>
 #include <string>
 
 namespace srchilite {
@@ -20,7 +20,7 @@ struct HighlightBuilderException : public std::exception {
     std::string message;
 
     /// possible exception that caused this one
-    boost::regex_error causedBy;
+    std::regex_error causedBy;
 
     /// filename of the element that caused this exception
     std::string filename;
@@ -30,10 +30,10 @@ struct HighlightBuilderException : public std::exception {
 
     HighlightBuilderException(const std::string &_message,
             const ParserInfo *parserinfo,
-            const boost::regex_error &e = boost::regex_error(boost::regex_constants::error_bad_pattern));
+            const std::regex_error &e = std::regex_error(std::regex_constants::error_badbrace));
     HighlightBuilderException(const std::string &_message,
             const std::string &filename = "", unsigned int line = 0,
-            const boost::regex_error &e = boost::regex_error(boost::regex_constants::error_bad_pattern));
+            const std::regex_error &e = std::regex_error(std::regex_constants::error_badbrace));
     virtual ~HighlightBuilderException() throw();
 
     virtual const char* what ( ) const throw () ;

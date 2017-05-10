@@ -9,7 +9,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(source-highlight,3.1.7)
+AC_INIT(GNU source-highlight,3.1.8)
 
 # this is requested for the install-data-local of doxygen documentation
 AC_PREREQ([2.62])
@@ -19,14 +19,14 @@ AC_CONFIG_MACRO_DIR([m4])
 
 dnl for automake
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE($PACKAGE_NAME, $PACKAGE_VERSION)
+AM_INIT_AUTOMAKE
 
 #API version (often = GENERIC_MAJOR_VERSION.GENERIC_MINOR_VERSION)
 #API_VERSION=1.0
 #AC_SUBST(API_VERSION)
 
 #shared library versioning
-LIBRARY_VERSION=4:0:0
+LIBRARY_VERSION=4:1:0
 #               | | |
 #        +------+ | +---+
 #        |        |     |
@@ -160,7 +160,9 @@ AC_HEADER_STDC
 AC_CHECK_HEADERS(unistd.h)
 
 # For gnulib.
+AC_LANG_PUSH([C])
 gl_INIT
+AC_LANG_POP([C])
 
 dnl needed by readtags.c
 AC_TYPE_OFF_T
@@ -258,6 +260,7 @@ AC_CONFIG_FILES(
 [
 Makefile
 source-highlight.pc
+src-highlite.directive
 m4/Makefile
 gl/Makefile
 src/Makefile

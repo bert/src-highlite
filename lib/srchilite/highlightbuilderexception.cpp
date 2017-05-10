@@ -19,14 +19,14 @@ namespace srchilite {
 
 HighlightBuilderException::HighlightBuilderException(
         const std::string &_message, const ParserInfo *parserinfo,
-        const boost::regex_error &e) :
+        const std::regex_error &e) :
     message(_message), causedBy(e), filename(parserinfo->filename),
             line(parserinfo->line) {
 }
 
 HighlightBuilderException::HighlightBuilderException(
         const std::string &_message, const std::string &_filename,
-        unsigned int _line, const boost::regex_error &e) :
+        unsigned int _line, const std::regex_error &e) :
     message(_message), causedBy(e), filename(_filename), line(_line) {
 }
 

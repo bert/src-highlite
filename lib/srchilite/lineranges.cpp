@@ -13,19 +13,19 @@
 #include "lineranges.h"
 #include <sstream>
 
-#include <boost/regex.hpp>
+#include <regex>
 #include <cstdlib>
 
 namespace srchilite {
 
 /// regular expression for a single line
-static boost::regex singleNumber("\\s*([[:digit:]]+)\\s*");
+static std::regex singleNumber("\\s*([[:digit:]]+)\\s*");
 /// regular expression for an interval
-static boost::regex rangeExp("\\s*([[:digit:]]+)\\s*-\\s*([[:digit:]]+)\\s*");
+static std::regex rangeExp("\\s*([[:digit:]]+)\\s*-\\s*([[:digit:]]+)\\s*");
 /// regular expression for an interval with only the first element
-static boost::regex rangeExp1("\\s*([[:digit:]]+)\\s*-\\s*");
+static std::regex rangeExp1("\\s*([[:digit:]]+)\\s*-\\s*");
 /// regular expression for an interval with only the second element
-static boost::regex rangeExp2("\\s*-\\s*([[:digit:]]+)\\s*");
+static std::regex rangeExp2("\\s*-\\s*([[:digit:]]+)\\s*");
 
 using namespace std;
 
@@ -38,15 +38,15 @@ LineRanges::~LineRanges() {
 }
 
 RangeError LineRanges::addRange(const std::string &range) {
-    boost::smatch match;
-    if (boost::regex_match(range, match, singleNumber)) {
+    std::smatch match;
+    if (std::regex_match(range, match, singleNumber)) {
         lineRangeSet.insert(make_pair(strtol(match[1].str().c_str(), 0, 0), 0));
-    } else if (boost::regex_match(range, match, rangeExp)) {
+    } else if (std::regex_match(range, match, rangeExp)) {
         lineRangeSet.insert(make_pair(strtol(match[1].str().c_str(), 0, 0),
                 strtol(match[2].str().c_str(), 0, 0)));
-    } else if (boost::regex_match(range, match, rangeExp1)) {
+    } else if (std::regex_match(range, match, rangeExp1)) {
         lineRangeSet.insert(make_pair(strtol(match[1].str().c_str(), 0, 0), -1));
-    } else if (boost::regex_match(range, match, rangeExp2)) {
+    } else if (std::regex_match(range, match, rangeExp2)) {
         lineRangeSet.insert(make_pair(-1, strtol(match[1].str().c_str(), 0, 0)));
     } else {
         return INVALID_RANGE_NUMBER;

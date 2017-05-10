@@ -44,13 +44,13 @@ DocTemplate::output_begin(const string &title, const string &cs, const string &a
     const string &header, const string &footer, const std::string &background,
     const string &input_lang)
 {
-    boost::regex title_exp(TITLE_VAR);
-    boost::regex css_exp(CSS_VAR);
-    boost::regex additional_exp(ADDITIONAL_VAR);
-    boost::regex header_exp(HEADER_VAR);
-    boost::regex footer_exp(FOOTER_VAR);
-    boost::regex background_exp(BACKGROUND_VAR);
-    boost::regex input_lang_exp(INPUT_LANG_VAR);
+    std::regex title_exp(TITLE_VAR);
+    std::regex css_exp(CSS_VAR);
+    std::regex additional_exp(ADDITIONAL_VAR);
+    std::regex header_exp(HEADER_VAR);
+    std::regex footer_exp(FOOTER_VAR);
+    std::regex background_exp(BACKGROUND_VAR);
+    std::regex input_lang_exp(INPUT_LANG_VAR);
 
     string ret = subst(title_exp, begin_repr, title);
     ret = subst(css_exp, ret, cs);
@@ -68,13 +68,13 @@ DocTemplate::output_end(const string &title, const string &cs, const string &add
     const string &header, const string &footer, const std::string &background, 
     const string &input_lang)
 {
-    boost::regex title_exp(TITLE_VAR);
-    boost::regex css_exp(CSS_VAR);
-    boost::regex additional_exp(ADDITIONAL_VAR);
-    boost::regex header_exp(HEADER_VAR);
-    boost::regex footer_exp(FOOTER_VAR);
-    boost::regex background_exp(BACKGROUND_VAR);
-    boost::regex input_lang_exp(INPUT_LANG_VAR);
+    std::regex title_exp(TITLE_VAR);
+    std::regex css_exp(CSS_VAR);
+    std::regex additional_exp(ADDITIONAL_VAR);
+    std::regex header_exp(HEADER_VAR);
+    std::regex footer_exp(FOOTER_VAR);
+    std::regex background_exp(BACKGROUND_VAR);
+    std::regex input_lang_exp(INPUT_LANG_VAR);
 
     string ret = subst(title_exp, end_repr, title);
     ret = subst(css_exp, ret, cs);

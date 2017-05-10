@@ -23,7 +23,7 @@
 #define NUM_OF_CHARS 256
 
 #include <string>
-#include <boost/regex.hpp>
+#include <regex>
 
 #include "preformatter.h"
 
@@ -31,7 +31,7 @@ namespace srchilite {
 
 /**
  * Translates specific character sequences into corresponding ones;
- * it can also use regualr expression for the characters to be translated.
+ * it can also use regular expression for the characters to be translated.
  * This is useful for translating some characters in the input which
  * are special characters in the output formats, e.g., & in LaTeX, or
  * < in HTML.
@@ -45,7 +45,7 @@ protected:
     /// the corresponding translated regular expression (for buffering)
     std::string translation_format;
     /// the actual regular expression
-    boost::regex *reg_exp;
+    std::regex *reg_exp;
     /// whether we are at the beginning of a new line
     bool bol;
 

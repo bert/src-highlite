@@ -24,7 +24,7 @@ void check_range_regex(const string &s, bool expectedTrue = true) {
 
 void check_match(const string &line, const string &expected = "") {
     cout << "searching inside " << line;
-    const boost::regex *matched = 0;
+    const std::regex *matched = 0;
     if (expected != "") {
         matched = ranges.matches(line);
         assertTrue(matched != 0);
@@ -52,7 +52,9 @@ int main() {
     check_range_regex("simple regex");
     check_range_regex("[[:alpha:]]+");
     // test with a wrong regular expression
-    check_range_regex("{notclosed", false);
+    // this is accepted now
+    // https://savannah.gnu.org/bugs/index.php?41786
+    check_range_regex("{notclosed");
 
     // reset regular expressions
     ranges.clear();

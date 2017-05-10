@@ -10,12 +10,12 @@
 #ifndef _SUBSTFUN_H_
 #define _SUBSTFUN_H_
 
-#include <boost/regex.hpp>
+#include <regex>
 #include <string>
 
 namespace srchilite {
 
-std::string subst(const boost::regex &e, const std::string &s, const std::string &sub);
+std::string subst(const std::regex &e, const std::string &s, const std::string &sub);
 
 }
 
